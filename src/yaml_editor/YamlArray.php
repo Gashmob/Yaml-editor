@@ -1,15 +1,23 @@
 <?php
 
 
+/**
+ * Class YamlArray
+ * This class represent a yaml array that you can modify with the set() method
+ */
 class YamlArray
 {
     /**
+     * The array that represent the yaml array
      * @var array
      */
     private $array;
 
     /**
      * YamlArray constructor.
+     * Take a YamlFile and parse the yaml array to a php arrau
+     * @see YamlFile
+     * @see YamlParser
      * @param YamlFile $file
      */
     public function __construct(YamlFile $file)
@@ -18,6 +26,9 @@ class YamlArray
     }
 
     /**
+     * With this method you can modify the array
+     * To do array[foo][bar] = 2
+     * You must do set('foo.bar', 2);
      * @param string $path
      * @param $value
      */
@@ -27,6 +38,8 @@ class YamlArray
     }
 
     /**
+     * Return the value math with the path
+     * If the path doesn't exist, an exception is throw
      * @param string $path
      * @return mixed|string|array
      * @throws PathNotFoundException
@@ -58,6 +71,7 @@ class YamlArray
     }
 
     /**
+     * Return the php array equivalent to the yaml array
      * @return array
      */
     public function getArray(): array

@@ -1,17 +1,23 @@
 <?php
 
 
+/**
+ * Class YamlFile
+ * This class represent a yaml file (.yml)
+ * It's with this class that you can open and edit .yml file
+ */
 class YamlFile
 {
     /**
+     * The file which is open
      * @var resource
      */
     private $file;
 
     /**
      * YamlFile constructor.
-     * @param string $filename
-     * @throws NotYamlFileException
+     * @param string $filename The path to the file
+     * @throws NotYamlFileException If it's not a .yml file
      */
     public function __construct($filename)
     {
@@ -22,6 +28,8 @@ class YamlFile
     }
 
     /**
+     * Return an instance of YamlArray class
+     * @see YamlArray
      * @return YamlArray
      */
     public function getYamlArray()
@@ -30,6 +38,8 @@ class YamlFile
     }
 
     /**
+     * With this method you can change the file content with a new YamlArray
+     * @see YamlArray
      * @param YamlArray $array
      */
     public function setYamlArray(YamlArray $array)

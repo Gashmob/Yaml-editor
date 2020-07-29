@@ -1,6 +1,11 @@
 <?php
 
 
+/**
+ * Class PathNotFoundException
+ * Throw if the path is not found in the array
+ * @see YamlArray
+ */
 class PathNotFoundException extends Exception
 {
     public function __construct()

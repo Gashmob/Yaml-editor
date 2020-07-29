@@ -1,11 +1,17 @@
 <?php
 
 
+/**
+ * Class YamlParser
+ * This class parse yaml array to php array and vice versa
+ */
 abstract class YamlParser
 {
     const TAB = '  ';
 
     /**
+     * Parse a yaml array to a php array
+     * @see YamlFile
      * @param YamlFile $file
      * @return array
      */
@@ -62,6 +68,8 @@ abstract class YamlParser
     }
 
     /**
+     * Parse a php array to a yaml array
+     * @see YamlArray
      * @param YamlArray $yamlArray
      * @return string
      */

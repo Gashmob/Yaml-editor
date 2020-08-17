@@ -1,5 +1,8 @@
 <?php
 
+namespace YamlEditor;
+
+use YamlEditor\Exceptions\PathNotFoundException;
 
 /**
  * Class YamlArray
@@ -16,9 +19,9 @@ class YamlArray
     /**
      * YamlArray constructor.
      * Take a YamlFile and parse the yaml array to a php arrau
-     * @see YamlFile
-     * @see YamlParser
      * @param YamlFile $file
+     * @see YamlParser
+     * @see YamlFile
      */
     public function __construct(YamlFile $file)
     {

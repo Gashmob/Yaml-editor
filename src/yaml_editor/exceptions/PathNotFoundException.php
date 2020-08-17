@@ -1,5 +1,8 @@
 <?php
 
+namespace YamlEditor\Exceptions;
+
+use Exception;
 
 /**
  * Class PathNotFoundException

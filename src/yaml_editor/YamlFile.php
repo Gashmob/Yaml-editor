@@ -1,5 +1,8 @@
 <?php
 
+namespace YamlEditor;
+
+use YamlEditor\Exceptions\NotYamlFileException;
 
 /**
  * Class YamlFile
@@ -29,8 +32,8 @@ class YamlFile
 
     /**
      * Return an instance of YamlArray class
-     * @see YamlArray
      * @return YamlArray
+     * @see YamlArray
      */
     public function getYamlArray()
     {
@@ -39,8 +42,8 @@ class YamlFile
 
     /**
      * With this method you can change the file content with a new YamlArray
-     * @see YamlArray
      * @param YamlArray $array
+     * @see YamlArray
      */
     public function setYamlArray(YamlArray $array)
     {

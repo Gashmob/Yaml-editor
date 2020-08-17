@@ -1,5 +1,6 @@
 <?php
 
+namespace YamlEditor;
 
 /**
  * Class YamlParser
@@ -11,9 +12,9 @@ abstract class YamlParser
 
     /**
      * Parse a yaml array to a php array
-     * @see YamlFile
      * @param YamlFile $file
      * @return array
+     * @see YamlFile
      */
     public static function toArray(YamlFile $file)
     {
@@ -69,9 +70,9 @@ abstract class YamlParser
 
     /**
      * Parse a php array to a yaml array
-     * @see YamlArray
      * @param YamlArray $yamlArray
      * @return string
+     * @see YamlArray
      */
     public static function toYaml(YamlArray $yamlArray)
     {

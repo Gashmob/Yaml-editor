@@ -2,7 +2,6 @@
 
 namespace YamlEditor;
 
-use YamlEditor\Exceptions\FileNotOpenException;
 use YamlEditor\Exceptions\NotYamlFileException;
 
 /**
@@ -17,11 +16,6 @@ class YamlFile
      * @var resource
      */
     private $file;
-
-    /**
-     * @var string
-     */
-    private $content;
 
     /**
      * YamlFile constructor.
@@ -39,7 +33,6 @@ class YamlFile
     /**
      * Return an instance of YamlArray class
      * @return YamlArray
-     * @throws FileNotOpenException
      * @see YamlArray
      */
     public function getYamlArray()
@@ -50,41 +43,21 @@ class YamlFile
     /**
      * With this method you can change the file content with a new YamlArray
      * @param YamlArray $array
-     * @throws FileNotOpenException
      * @see YamlArray
      */
     public function setYamlArray(YamlArray $array)
     {
         $s = YamlParser::toYaml($array);
-        $this->content = $s;
-        ftruncate($this->getFile(), 0);
-        fwrite($this->getFile(), $this->getContent());
+        ftruncate($this->file, 0);
+        fwrite($this->file, $s);
     }
 
     /**
      * @return resource
-     * @throws FileNotOpenException
      */
     public function getFile()
     {
-        if ($this->file === null) {
-            throw new FileNotOpenException();
-        }
-
         return $this->file;
-    }
-
-    /**
-     * @return string
-     * @throws FileNotOpenException
-     */
-    public function getContent()
-    {
-        if ($this->content === null) {
-            $this->content = fread($this->getFile(), filesize($this->getFile()));
-        }
-
-        return $this->content;
     }
 
     // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.

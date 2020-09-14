@@ -12,12 +12,11 @@ abstract class YamlParser
      * Parse a yaml array to a php array
      * @param YamlFile $file
      * @return array
-     * @throws Exceptions\FileNotOpenException
      * @see YamlFile
      */
     public static function toArray(YamlFile $file)
     {
-        return yaml_parse($file->getContent());
+        return yaml_parse(fread($file->getFile(), filesize($file->getFile())));
     }
 
     /**

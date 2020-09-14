@@ -18,11 +18,10 @@ class YamlArray
 
     /**
      * YamlArray constructor.
-     * Take a YamlFile and parse the yaml array to a php array
+     * Take a YamlFile and parse the yaml array to a php arrau
      * @param YamlFile $file
-     * @throws Exceptions\FileNotOpenException
-     * @see YamlFile
      * @see YamlParser
+     * @see YamlFile
      */
     public function __construct(YamlFile $file)
     {

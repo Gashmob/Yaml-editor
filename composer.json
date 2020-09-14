@@ -1,0 +1,14 @@
+{
+  "name": "Gashmob/Yaml-editor",
+  "type": "library",
+  "version": "1.2",
+  "description": "Php classes for editing yaml files",
+  "keywords": ["yaml","php","yaml-parser"],
+  "homepage": "https://github.com/Gashmob/Yaml-editor",
+  "authors": [
+    {
+      "name": "Kevin Traini",
+      "role": "Developer"
+    }
+  ],
+}

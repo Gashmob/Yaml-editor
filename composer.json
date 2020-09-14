@@ -1,7 +1,7 @@
 {
   "name": "gashmob/yaml-editor",
   "type": "library",
-  "version": "1.2",
+  "version": "1.2.0",
   "license": "MIT",
   "description": "Php classes for editing yaml files",
   "keywords": ["yaml","php","yaml-parser"],
@@ -9,7 +9,8 @@
   "authors": [
     {
       "name": "Kevin Traini",
-      "role": "Developer"
+      "role": "Developer",
+      "homepage": "https://ktraini.com"
     }
   ]
 }

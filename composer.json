@@ -1,5 +1,5 @@
 {
-  "name": "Gashmob/Yaml-editor",
+  "name": "gashmob/yaml-editor",
   "type": "library",
   "version": "1.2",
   "description": "Php classes for editing yaml files",

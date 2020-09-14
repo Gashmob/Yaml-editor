@@ -24,7 +24,7 @@ class YamlFile
      */
     public function __construct($filename)
     {
-        if ($this->getExtension($filename) == 'yml') {
+        if ($this->getExtension($filename) == 'yml' || $this->getExtension($filename) == 'yaml') {
             if (file_exists($filename)) $this->file = fopen($filename, 'r+t');
             else $this->file = fopen($filename, 'x+t');
         } else throw new NotYamlFileException();

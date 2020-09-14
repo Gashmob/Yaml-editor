@@ -9,10 +9,12 @@ Tutoriel
 ---
 Voici un petit exemple de comment utiliser ces classes :
 ````php
+use YamlEditor\YamlFile;
+
 // Ouvre un fichier yaml, le créé si il n'existe pas
 $yamlFile = new YamlFile('monFichier.yml');
 // Convertie le tableau yaml en tableau php
-$yamlArray = new YamlArray($yamlFile);
+$yamlArray = $yamlFile->getYamlArray();
 
 // Modifie la valeur de foo.bar à 2, créé le chemin si il n'existe pas
 $yamlArray->set('foo.bar', 2);

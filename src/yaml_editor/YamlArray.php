@@ -18,7 +18,7 @@ class YamlArray
 
     /**
      * YamlArray constructor.
-     * Take a YamlFile and parse the yaml array to a php arrau
+     * Take a YamlFile and parse the yaml array to a php array
      * @param YamlFile $file
      * @see YamlParser
      * @see YamlFile

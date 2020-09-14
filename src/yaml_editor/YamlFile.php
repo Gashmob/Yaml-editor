@@ -3,6 +3,7 @@
 namespace YamlEditor;
 
 use YamlEditor\Exceptions\NotYamlFileException;
+use YamlEditor\Exceptions\ReadOnlyFileException;
 
 /**
  * Class YamlFile
@@ -18,15 +19,30 @@ class YamlFile
     private $file;
 
     /**
+     * If the file is read-only
+     * @var bool
+     */
+    private $readOnly = false;
+
+    /**
      * YamlFile constructor.
      * @param string $filename The path to the file
      * @throws NotYamlFileException If it's not a .yml file
+     * @throws ReadOnlyFileException If the file is read-only
      */
     public function __construct($filename)
     {
-        if ($this->getExtension($filename) == 'yml') {
-            if (file_exists($filename)) $this->file = fopen($filename, 'r+t');
-            else $this->file = fopen($filename, 'x+t');
+        if ($this->getExtension($filename) == 'yml' || $this->getExtension($filename) == 'yaml') {
+            if (file_exists($filename)) {
+                if (is_readable($filename)) {
+                    if (is_writable($filename)) {
+                        $this->file = fopen($filename, 'r+t');
+                    } else {
+                        $this->file = fopen($filename, 'r');
+                        $this->readOnly = true;
+                    }
+                } else throw new ReadOnlyFileException();
+            } else $this->file = fopen($filename, 'x+t');
         } else throw new NotYamlFileException();
     }
 
@@ -43,13 +59,17 @@ class YamlFile
     /**
      * With this method you can change the file content with a new YamlArray
      * @param YamlArray $array
+     * @throws ReadOnlyFileException
      * @see YamlArray
      */
     public function setYamlArray(YamlArray $array)
     {
-        $s = YamlParser::toYaml($array);
-        ftruncate($this->file, 0);
-        fwrite($this->file, $s);
+        if (!$this->readOnly) {
+            $s = YamlParser::toYaml($array);
+            rewind($this->file);
+            var_dump(ftruncate($this->file, 0));
+            fwrite($this->file, $s);
+        } else throw new ReadOnlyFileException();
     }
 
     /**

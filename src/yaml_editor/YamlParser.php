@@ -8,7 +8,7 @@ namespace YamlEditor;
  */
 abstract class YamlParser
 {
-    const TAB = '  ';
+    const TAB = '  '; // 2 spaces
 
     /**
      * Parse a yaml array to a php array
@@ -18,54 +18,86 @@ abstract class YamlParser
      */
     public static function toArray(YamlFile $file)
     {
-        $array = [];
+        $result = [];
+
         $f = $file->getFile();
 
-        $path = '';
         $nbTabP = 0;
-        $value = '';
-        $list = [];
+        $list = array();
+        $path = '';
         while ($line = fgets($f)) {
-            $nbTab = self::countTabulation($line);
-            $name = self::getName($line);
+            $nbTab = self::countTabulations($line);
+            //var_dump($path);
 
             if ($nbTab == $nbTabP) {
                 if (self::isListElement($line)) {
-                    $list[] = self::getValue($line);
-                } elseif (count($list) > 0) {
-                    $array = self::set($path, $list, $array);
-                    $list = [];
+                    array_push($list, self::getValue($line));
                 } else {
-                    if ($path != '') {
-                        $array = self::set($path, $value, $array);
-                        $path = self::removeLastPath($path);
+                    if (count($list) > 0) {
+                        $result = self::set($path, $list, $result);
+                        $list = array();
                     }
+
+                    $name = self::getName($line);
                     $path .= strlen($path) > 0 ? ".$name" : $name;
+                    if (self::containValue($line)) {
+                        $value = self::getValue($line);
+                        $result = self::set($path, $value, $result);
+                    }
                 }
             } elseif ($nbTab > $nbTabP) {
-                if (self::isListElement($line)) {
-                    $list[] = self::getValue($line);
+                if (count($list) > 0) {
+                    $result = self::set($path, $list, $result);
+                    $list = array();
                 }
-                $path .= strlen($path) > 0 ? ".$name" : $name;
+
+                if (self::isListElement($line)) {
+                    array_push($list, self::getValue($line));
+                } else {
+                    $name = self::getName($line);
+                    $path .= strlen($path) > 0 ? ".$name" : $name;
+                    if (self::containValue($line)) {
+                        //echo "ok $line</br>";
+                        $value = self::getValue($line);
+                        $result = self::set($path, $value, $result);
+                    }
+                }
             } else { // $nbTab < $nbTabP
-                $array = self::set($path, $value, $array);
+                if (count($list) > 0) {
+                    $result = self::set($path, $list, $result);
+                    $list = array();
+                }
+
                 $n = $nbTabP - $nbTab;
                 $path = self::removeLastPath($path, $n + 1);
-                $path .= strlen($path) > 0 ? ".$name" : $name;
+                if (self::isListElement($line)) {
+                    array_push($list, self::getValue($line));
+                } else {
+                    if (self::isValue($line)) {
+                        $value = self::getValue($line);
+                        $result = self::set($path, $value, $result);
+                    } else {
+                        $name = self::getName($line);
+                        $path .= strlen($path) > 0 ? ".$name" : $name;
+                        if (self::containValue($line)) {
+                            $value = self::getValue($line);
+                            $result = self::set($path, $value, $result);
+                        }
+                    }
+                }
             }
 
-            $value = self::getValue($line);
             $nbTabP = $nbTab;
         }
 
+        //echo '</br>';
+        //var_dump($path);
+
         if (count($list) > 0) {
-            $array = self::set($path, $list, $array);
-        }
-        if ($value != '') {
-            $array = self::set($path, $value, $array);
+            $result = self::set($path, $list, $result);
         }
 
-        return $array;
+        return $result;
     }
 
     /**
@@ -85,13 +117,13 @@ abstract class YamlParser
 
     /**
      * @param string $path
-     * @param $value
+     * @param mixed $value
      * @param array $array
      * @return array
      */
     private static function set($path, $value, array $array)
     {
-        return self::getArray(self::cut($path, '.'), $value, $array);
+        return self::getArray(explode('.', $path), $value, $array);
     }
 
     /**
@@ -99,7 +131,7 @@ abstract class YamlParser
      * @param $value
      * @return array
      */
-    public static function setArray(array $path, $value)
+    private static function setArray(array $path, $value)
     {
         if (count($path) == 1) {
             $result[$path[0]] = $value;
@@ -113,41 +145,6 @@ abstract class YamlParser
     }
 
     /**
-     * @param string $line
-     * @return mixed|string
-     */
-    private static function getName($line)
-    {
-        return self::isValue($line) ? '' : self::cut(trim($line), ':')[0];
-    }
-
-    /**
-     * @param string $line
-     * @return string
-     */
-    private static function getValue($line)
-    {
-        $l = trim($line);
-
-        if (self::isListElement($l)) {
-            $t = self::cut($l, ' ');
-            $l = count($t) > 1 ? $t[1] : '';
-        } else {
-            $t = self::cut($l, ':');
-            $l = count($t) > 1 ? $t[1] : '';
-        }
-
-        $l = trim($l);
-
-        if (self::isString($l) && strlen($l) > 1) {
-            $l = substr($l, 1, strlen($l) - 2);
-        }
-
-
-        return trim($l);
-    }
-
-    /**
      * @param array $path
      * @param $value
      * @param array $array
@@ -157,7 +154,7 @@ abstract class YamlParser
     {
         if (count($path) == 1) {
             $array[$path[0]] = $value;
-        } elseif (count($path) > 0) {
+        } elseif (count($path) > 1) {
             if (isset($array[$path[0]])) {
                 $array[$path[0]] = self::getArray(array_slice($path, 1), $value, $array[$path[0]]);
             } else {
@@ -166,6 +163,63 @@ abstract class YamlParser
         }
 
         return $array;
+    }
+
+    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
+
+    /**
+     * @param string $line
+     * @return string
+     */
+    private static function getName($line)
+    {
+        $l = trim($line);
+
+        if (!self::isListElement($l) && !self::isValue($l)) {
+            $t = explode(':', $l);
+            return count($t) > 0 ? $t[0] : '';
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * @param string $line
+     * @return bool|int|float|string
+     */
+    private static function getValue($line)
+    {
+        $l = trim($line);
+
+        if (self::containValue($l)) {
+            if (self::isValue($l)) {
+                if (self::isListElement($l)) {
+                    $l = substr($l, 1);
+                }
+            } else {
+                $t = explode(':', $l);
+                $l = implode(':', array_slice($t, 1));
+            }
+            $l = trim($l);
+
+            if (self::isString($l)) {
+                $l = substr($l, 1, strlen($l) - 2);
+            }
+
+            if (is_numeric($l)) {
+                if (is_int($l)) {
+                    $l = intval($l);
+                } else {
+                    $l = floatval($l);
+                }
+            } elseif (is_bool($l)) {
+                $l = boolval($l);
+            }
+
+            return $l;
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -181,77 +235,25 @@ abstract class YamlParser
      * @param string $line
      * @return bool
      */
-    private static function isString($line)
+    private static function isListElement($line)
     {
         $l = trim($line);
-        $result = false;
-
-        if (strlen($l) >= 2 && self::isValue($l)) {
-            $result = $l[0] == '"' && $l[strlen($l) - 1] == '"';
-        }
-
-        return $result;
+        return self::isValue($l) && strlen($l) > 0 ? $l[0] == '-' : false;
     }
 
     /**
      * @param string $line
      * @return bool
      */
-    private static function isListElement($line)
+    private static function isString($line)
     {
         $l = trim($line);
-        return self::isValue($line) && (strlen($l) > 0 ? $l[0] == '-' : false);
+        $len = strlen($l);
+        return $len >= 2 ? $l[0] == '"' && $l[$len - 1] == '"'
+            : false;
     }
 
-    /**
-     * @param string $line
-     * @return int
-     */
-    private static function countTabulation($line)
-    {
-        $result = 0;
-
-        if (strlen($line) > 0) {
-            $i = 0;
-            $c = $line[$i];
-
-            while ($c == ' ' && $i < strlen($line)) {
-                $result++;
-
-                $i++;
-                $c = $line[$i];
-            }
-        }
-
-        return $result / 2;
-    }
-
-    /**
-     * @param string $sentence
-     * @param string $delimiter
-     * @return array
-     */
-    private static function cut($sentence, $delimiter)
-    {
-        $result = [];
-        $word = '';
-
-        for ($i = 0; $i < strlen($sentence); $i++) {
-            $c = $sentence[$i];
-            if ($c == $delimiter && strlen($word) > 0) {
-                $result[] = $word;
-                $word = '';
-            } else {
-                $word .= $c;
-            }
-        }
-
-        if (strlen($word) > 0) {
-            $result[] = $word;
-        }
-
-        return $result;
-    }
+    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 
     /**
      * @param string $path
@@ -260,8 +262,7 @@ abstract class YamlParser
      */
     private static function removeLastPath($path, $n = 1)
     {
-        $t = self::cut($path, '.');
-
+        $t = explode('.', $path);
         $result = '';
 
         for ($i = 0; $i < count($t) - $n; $i++) {
@@ -271,62 +272,77 @@ abstract class YamlParser
         return $result;
     }
 
-    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
-
     /**
-     * @param string $value
+     * @param string $line
      * @return bool
      */
-    private static function isNumber($value)
+    private static function containValue($line)
     {
-        $numbers = '1234567890';
+        if (self::isValue($line)) {
+            return true;
+        } else {
+            $l = trim($line);
+            $t = explode(':', $l);
+            return count($t) == 2 ? $t[1] != '' : false;
+        }
+    }
 
-        $result = true;
+    /**
+     * @param string $line
+     * @return int
+     */
+    private static function countTabulations($line)
+    {
         $i = 0;
-        while ($i < strlen($value) && $result) {
-            $c = $value[$i];
-            if (!strstr($numbers, $c)) {
-                $result = false;
-            }
-
+        $c = strlen($line) > 0 ? $line[$i] : '';
+        while ($c == ' ' && $i < strlen($line)) {
             $i++;
+            $c = $line[$i];
+        }
+
+        return $i / 2;
+    }
+
+    /**
+     * @param array $array
+     * @param int $nbTab
+     * @return string
+     */
+    private static function arrayToYaml(array $array, $nbTab)
+    {
+        $result = '';
+
+        foreach ($array as $name => $value) {
+            $result .= self::getTabs($nbTab);
+
+            if (is_array($value)) {
+                $result .= "$name:\n" . self::arrayToYaml($value, $nbTab + 1);
+            } else {
+                if (is_numeric($name)) {
+                    $result .= '- ';
+                } else {
+                    $result .= "$name: ";
+                }
+
+                if (is_numeric($value)) {
+                    $result .= $value;
+                } else {
+                    $result .= "\"$value\"";
+                }
+                $result .= "\n";
+            }
         }
 
         return $result;
     }
 
-    /**
-     * @param int $nbTab
-     * @return string
-     */
-    private static function getTab($nbTab)
+    private static function getTabs($nbTab)
     {
         $result = '';
 
         while ($nbTab > 0) {
             $result .= self::TAB;
             $nbTab--;
-        }
-
-        return $result;
-    }
-
-    private static function arrayToYaml(array $array, $nbTab)
-    {
-        $result = '';
-
-        foreach ($array as $name => $value) {
-            $result .= self::getTab($nbTab);
-            if (is_array($value)) {
-                $result .= "$name:\n" . self::arrayToYaml($value, $nbTab + 1);
-            } else {
-                $result .= "$name: ";
-                if (self::isNumber($value)) {
-                    $result .= "$value\n";
-                } else {
-                    $result .= "\"$value\"\n";
-                }
-            }
         }
 
         return $result;

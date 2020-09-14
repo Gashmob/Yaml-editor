@@ -48,7 +48,8 @@ class YamlFile
     public function setYamlArray(YamlArray $array)
     {
         $s = YamlParser::toYaml($array);
-        ftruncate($this->file, 0);
+        rewind($this->file);
+        var_dump(ftruncate($this->file, 0));
         fwrite($this->file, $s);
     }
 

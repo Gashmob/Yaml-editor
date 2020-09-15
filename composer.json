@@ -1,15 +1,18 @@
 {
-  "name": "gashmob/yaml-editor",
-  "type": "library",
-  "license": "MIT",
-  "description": "Php classes for editing yaml files",
-  "keywords": ["yaml","php","yaml-parser"],
-  "homepage": "https://github.com/Gashmob/Yaml-editor",
-  "authors": [
-    {
-      "name": "Kevin Traini",
-      "role": "Developer",
-      "homepage": "https://ktraini.com"
-    }
-  ]
+    "name": "gashmob/yaml-editor",
+    "description": "Php classes for editing yaml files",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kevin Traini",
+            "email": "kevin@ktraini.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "YamlEditor\\": "src/yaml_editor"
+        }
+    },
+    "require": {}
 }

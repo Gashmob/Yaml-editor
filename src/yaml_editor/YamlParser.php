@@ -39,6 +39,7 @@ abstract class YamlParser
                     }
 
                     $name = self::getName($line);
+                    $path = self::removeLastPath($path);
                     $path .= strlen($path) > 0 ? ".$name" : $name;
                     if (self::containValue($line)) {
                         $value = self::getValue($line);
@@ -57,7 +58,6 @@ abstract class YamlParser
                     $name = self::getName($line);
                     $path .= strlen($path) > 0 ? ".$name" : $name;
                     if (self::containValue($line)) {
-                        //echo "ok $line</br>";
                         $value = self::getValue($line);
                         $result = self::set($path, $value, $result);
                     }
@@ -89,9 +89,6 @@ abstract class YamlParser
 
             $nbTabP = $nbTab;
         }
-
-        //echo '</br>';
-        //var_dump($path);
 
         if (count($list) > 0) {
             $result = self::set($path, $list, $result);
@@ -147,10 +144,10 @@ abstract class YamlParser
     /**
      * @param array $path
      * @param $value
-     * @param array $array
+     * @param $array
      * @return array
      */
-    public static function getArray(array $path, $value, array $array)
+    public static function getArray(array $path, $value, $array)
     {
         if (count($path) == 1) {
             $array[$path[0]] = $value;

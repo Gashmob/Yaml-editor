@@ -12,20 +12,20 @@ abstract class YamlParser
 
     /**
      * Parse a yaml array to a php array
-     * @param YamlFile $file
+     * @param string $content
      * @return array
-     * @see YamlFile
      */
-    public static function toArray(YamlFile $file)
+    public static function toArray($content)
     {
         $result = [];
 
-        $f = $file->getFile();
+        $contentLines = explode("\n", $content);
 
         $nbTabP = 0;
         $list = array();
         $path = '';
-        while ($line = fgets($f)) {
+        $i = 0;
+        while ($line = $contentLines[$i]) {
             $nbTab = self::countTabulations($line);
             //var_dump($path);
 
@@ -88,6 +88,7 @@ abstract class YamlParser
             }
 
             $nbTabP = $nbTab;
+            $i++;
         }
 
         if (count($list) > 0) {

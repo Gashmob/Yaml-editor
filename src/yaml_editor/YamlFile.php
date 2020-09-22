@@ -19,6 +19,12 @@ class YamlFile
     private $file;
 
     /**
+     * The name of the file
+     * @var string
+     */
+    private $filename;
+
+    /**
      * If the file is read-only
      * @var bool
      */
@@ -32,6 +38,7 @@ class YamlFile
      */
     public function __construct($filename)
     {
+        $this->filename = $filename;
         if ($this->getExtension($filename) == 'yml' || $this->getExtension($filename) == 'yaml') {
             if (file_exists($filename)) {
                 if (is_readable($filename)) {
@@ -53,7 +60,7 @@ class YamlFile
      */
     public function getYamlArray()
     {
-        return new YamlArray($this);
+        return new YamlArray(fread($this->file, filesize($this->filename)));
     }
 
     /**

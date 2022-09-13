@@ -11,7 +11,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Gashmob\\YamlEditor\\": "src/"
+            "Gashmob\\YamlEditor\\": "src/",
+            "Gashmob\\YamlEditor\\Test\\": "test/"
         }
     },
     "require": {

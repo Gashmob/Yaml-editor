@@ -15,6 +15,10 @@ class YamlFile
     public function __construct($filename)
     {
         $this->filename = $filename;
+        if (!file_exists($filename)) {
+            $file = fopen($filename, 'w');
+            fclose($file);
+        }
     }
 
     public function get_content()

@@ -1,6 +1,6 @@
 <?php
 
-namespace YamlEditor;
+namespace Gashmob\YamlEditor;
 
 class YamlFile
 {

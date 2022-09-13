@@ -14,5 +14,7 @@
             "YamlEditor\\": "src/yaml_editor"
         }
     },
-    "require": {}
+    "require": {
+        "php": ">=5.6"
+    }
 }

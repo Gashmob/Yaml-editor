@@ -2,6 +2,8 @@
 
 namespace Gashmob\YamlEditor;
 
+use Gashmob\YamlEditor\exceptions\InvalidYamlException;
+
 class YamlFile
 {
     /**
@@ -21,8 +23,20 @@ class YamlFile
         }
     }
 
+    /**
+     * @return false|string
+     */
     public function get_content()
     {
         return file_get_contents($this->filename);
+    }
+
+    /**
+     * @return array
+     * @throws InvalidYamlException
+     */
+    public function read()
+    {
+        return YamlParser::yamlToArray($this->get_content());
     }
 }

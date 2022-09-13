@@ -1,26 +1,26 @@
-Yaml Editor
-===
+# Yaml Editor
 
-Cette série de 3 classes vous permettra de lire et de modifier facilement vos fichiers yaml.
+This classes allow you to read and write YAML files easily.
 
 ___
 
-Tutoriel
----
-Voici un petit exemple de comment utiliser ces classes :
+## Tutorial
+
+Here a little example of how to use this classes:
+
 ````php
 use YamlEditor\YamlFile;
 
-// Ouvre un fichier yaml, le créé si il n'existe pas
-$yamlFile = new YamlFile('monFichier.yml');
-// Convertie le tableau yaml en tableau php
+// Open a yaml file, create it if it doesn't exist
+$yamlFile = new YamlFile('myFile.yml');
+// Convert yaml array to php array
 $yamlArray = $yamlFile->getYamlArray();
 
-// Modifie la valeur de foo.bar à 2, créé le chemin si il n'existe pas
+// Modify value foo.bar to 2, create the path if it doesn't exist
 $yamlArray->set('foo.bar', 2);
-// Affiche la valeur de foo.bar, donc 2
+// Show the value of foo.bar, so 2
 echo $yamlArray->get('foo.bar');
 
-// Modifie le fichier qu'on a ouvert avec le nouveau tableau
+// Modify the opened file with the new array
 $yamlFile->setYamlArray($yamlArray);
 ````

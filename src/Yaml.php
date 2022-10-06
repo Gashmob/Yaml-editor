@@ -2,6 +2,8 @@
 
 namespace Gashmob\YamlEditor;
 
+use InvalidArgumentException;
+
 final class Yaml
 {
     /**
@@ -16,10 +18,18 @@ final class Yaml
     /**
      * @param $filename
      * @return array
+     * @throws InvalidArgumentException
      */
     public static function parseFile($filename)
     {
-        return [];
+        if (!file_exists($filename)) {
+            throw new InvalidArgumentException("File '$filename' does not exist.");
+        }
+        if (!is_readable($filename)) {
+            throw new InvalidArgumentException("File '$filename' is not readable.");
+        }
+
+        return self::parse(file_get_contents($filename));
     }
 
     /**

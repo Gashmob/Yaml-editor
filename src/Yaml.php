@@ -12,7 +12,9 @@ final class Yaml
      */
     public static function parse($input)
     {
-        return [];
+        $parser = new Parser();
+
+        return $parser->parse($input);
     }
 
     /**
@@ -39,6 +41,8 @@ final class Yaml
      */
     public static function dump($input, $indent = 4)
     {
-        return '';
+        $dumper = new Dumper();
+
+        return $dumper->dump($input, $indent);
     }
 }

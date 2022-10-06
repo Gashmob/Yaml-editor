@@ -12,5 +12,16 @@ Here a little example of how to use this classes:
 
 ```php
 <?php
-// TODO
+
+use Gashmob\YamlEditor\Yaml;
+
+// Parse a file:
+$output = Yaml::parseFile('myFile.yml');
+
+// Or just parse directly a string
+$output = Yaml::parse('foo: bar');
+
+// Then get the yaml result from the output
+$yaml = Yaml::dump($output);
+file_put_contents('myFile.yml', $yaml);
 ```

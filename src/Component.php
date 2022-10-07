@@ -65,8 +65,17 @@ class Component
 
     public function __toString()
     {
-        // TODO: Implement __toString() method.
-        return '';
+        $res = "{{$this->tag}: ";
+
+        if ($this->value instanceof Component) {
+            $res .= $this->value;
+        } else if (is_array($this->value)) {
+            $res .= '[' . implode(', ', $this->value) . ']';
+        } else {
+            $res .= $this->value;
+        }
+
+        return $res . '}';
     }
 
     /**
@@ -81,10 +90,10 @@ class Component
         }
 
         if (count($input) == 1) {
-            if (is_array($input[key($input)])) {
-                return new Component(key($input), self::fromArray($input[key($input)]));
+            if (is_array(current($input))) {
+                return new Component(key($input), self::fromArray(current($input)));
             }
-            return new Component(key($input), "");
+            return new Component(key($input), current($input));
         }
 
         $components = [];

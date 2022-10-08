@@ -18,7 +18,8 @@ class Parser
 
         $result = [];
         foreach ($array as $comp) {
-            array_merge($result, $comp->asArray());
+            $c = $comp->asArray();
+            $result[key($c)] = current($c);
         }
 
         return $result;
@@ -72,7 +73,7 @@ class Parser
         $minIndent = $this->getMinIndent($lines);
         $result = [];
         foreach ($lines as $line) {
-            $result = substr($line, $minIndent);
+            $result[] = substr($line, $minIndent);
         }
 
         return $result;
@@ -158,6 +159,10 @@ class Parser
             } else {
                 $childLines[] = $line;
             }
+        }
+
+        if ($currentTag !== null) {
+            $tags[$currentTag] = $childLines;
         }
 
         // Transform all tags into Components and use doParse() recursively on their values

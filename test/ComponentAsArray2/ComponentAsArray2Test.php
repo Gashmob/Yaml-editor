@@ -2,7 +2,7 @@
 
 namespace Gashmob\YamlEditor\Test\ComponentAsArray2;
 
-use Gashmob\YamlEditor\Component;
+use Gashmob\YamlEditor\Tag;
 use Gashmob\YamlEditor\Test\Test;
 
 class ComponentAsArray2Test implements Test
@@ -12,9 +12,9 @@ class ComponentAsArray2Test implements Test
      */
     public function run()
     {
-        $comp = new Component('foo', [
-            new Component('bar', 'baz'),
-            new Component('bar2', 'baz2'),
+        $comp = new Tag('foo', [
+            new Tag('bar', 'baz'),
+            new Tag('bar2', 'baz2'),
         ]);
 
         $a = $comp->asArray();

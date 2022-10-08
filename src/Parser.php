@@ -124,7 +124,7 @@ class Parser
      * Parse the lines into an array of components.
      *
      * @param string[] $lines
-     * @return Component[]|array|string
+     * @return Tag[]|array|string
      */
     private function doParse($lines)
     {
@@ -168,7 +168,7 @@ class Parser
         // Transform all tags into Components and use doParse() recursively on their values
         $components = [];
         foreach ($tags as $tag => $childLines) {
-            $components[] = new Component($tag, $this->doParse($this->reduceIndent($childLines)));
+            $components[] = new Tag($tag, $this->doParse($this->reduceIndent($childLines)));
         }
 
         return $components;

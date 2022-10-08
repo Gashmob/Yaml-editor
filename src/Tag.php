@@ -4,7 +4,7 @@ namespace Gashmob\YamlEditor;
 
 use InvalidArgumentException;
 
-class Component
+class Tag
 {
     /**
      * @var string
@@ -47,12 +47,12 @@ class Component
     public function asArray()
     {
         $v = $this->value;
-        if ($this->value instanceof Component) {
+        if ($this->value instanceof Tag) {
             $v = $this->value->asArray();
         } else if (is_array($this->value)) {
             $v = [];
             foreach ($this->value as $item) {
-                if ($item instanceof Component) {
+                if ($item instanceof Tag) {
                     $v[] = $item->asArray();
                 } else {
                     $v[] = $item;
@@ -67,7 +67,7 @@ class Component
     {
         $res = "{{$this->tag}: ";
 
-        if ($this->value instanceof Component) {
+        if ($this->value instanceof Tag) {
             $res .= $this->value;
         } else if (is_array($this->value)) {
             $res .= '[' . implode(', ', $this->value) . ']';
@@ -80,7 +80,7 @@ class Component
 
     /**
      * @param array $input
-     * @return Component|Component[]
+     * @return Tag|Tag[]
      * @throws InvalidArgumentException
      */
     public static function fromArray($input)
@@ -91,9 +91,9 @@ class Component
 
         if (count($input) == 1) {
             if (is_array(current($input))) {
-                return new Component(key($input), self::fromArray(current($input)));
+                return new Tag(key($input), self::fromArray(current($input)));
             }
-            return new Component(key($input), current($input));
+            return new Tag(key($input), current($input));
         }
 
         $components = [];

@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/Gashmob/Yaml-editor/actions/workflows/test.yml/badge.svg)](https://github.com/Gashmob/Yaml-editor/actions/workflows/test.yml)
 
-This classes allow you to read and write YAML files easily.
+The `Yaml` class allow you to read and write YAML files easily.
 
 ___
 

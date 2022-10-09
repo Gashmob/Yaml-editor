@@ -20,8 +20,8 @@ class ComponentAsArray2Test implements Test
         $a = $comp->asArray();
 
         return $a == ['foo' => [
-                ['bar' => 'baz'],
-                ['bar2' => 'baz2'],
+                'bar' => 'baz',
+                'bar2' => 'baz2',
             ]];
     }
 }

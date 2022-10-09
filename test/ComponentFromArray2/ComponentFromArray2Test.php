@@ -14,8 +14,8 @@ class ComponentFromArray2Test implements Test
     public function run()
     {
         $a = ['foo' => [
-            ['bar' => 'baz'],
-            ['bar2' => 'baz2'],
+            'bar' => 'baz',
+            'bar2' => 'baz2',
         ]];
         $comp = Tag::fromArray($a);
 

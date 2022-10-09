@@ -136,11 +136,16 @@ class Parser
             $indent = $this->getIndent($line);
             if ($indent === 0) {
                 if ($line[0] == '|') { // multiline
-                    return $lines;
+                    unset($lines[0]);
+                    return array_values($lines);
                 } else if ($line[0] == '-') { // list
                     return $this->parseList($lines);
                 } else if ($line[0] == '>') { // block
                     $lines[0][0] = ' ';
+                    // Trim all lines
+                    foreach ($lines as $key => $l) {
+                        $lines[$key] = trim($l);
+                    }
                     return trim(implode(' ', $lines));
                 } else if (!strstr($line, ':')) { // value
                     assert(count($lines) === 1);
@@ -189,14 +194,18 @@ class Parser
         foreach ($lines as $line) {
             if ($line[0] == '-') {
                 if ($inItem) {
-                    $result[] = $this->doParse($item);
+                    $result[] = $this->doParse($this->reduceIndent($item));
                     $item = [];
                 }
                 $inItem = true;
                 $item[] = substr($line, 1);
             } else {
-                $item[] = $line;
+                $item[] = substr($line, 1);
             }
+        }
+
+        if ($inItem) {
+            $result[] = $this->doParse($this->reduceIndent($item));
         }
 
         return $result;

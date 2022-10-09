@@ -53,7 +53,8 @@ class Tag
             $v = [];
             foreach ($this->value as $item) {
                 if ($item instanceof Tag) {
-                    $v[] = $item->asArray();
+                    $ar = $item->asArray();
+                    $v[key($ar)] = current($ar);
                 } else {
                     $v[] = $item;
                 }
@@ -80,13 +81,17 @@ class Tag
 
     /**
      * @param array $input
-     * @return Tag|Tag[]
+     * @return Tag|Tag[]|null
      * @throws InvalidArgumentException
      */
     public static function fromArray($input)
     {
         if (!is_array($input)) {
             throw new InvalidArgumentException('Input must be an array');
+        }
+
+        if (empty($input)) {
+            return null;
         }
 
         if (count($input) == 1) {
@@ -98,8 +103,12 @@ class Tag
 
         $components = [];
 
-        for ($i = 0; $i < count($input); $i++) {
-            $components[] = self::fromArray($input[$i]);
+        foreach ($input as $key => $value) {
+            if (is_array($value)) {
+                $components[] = new Tag($key, self::fromArray($value));
+            } else {
+                $components[] = new Tag($key, $value);
+            }
         }
 
         return $components;

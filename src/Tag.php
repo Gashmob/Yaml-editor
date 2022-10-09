@@ -55,6 +55,17 @@ class Tag
                 if ($item instanceof Tag) {
                     $ar = $item->asArray();
                     $v[key($ar)] = current($ar);
+                } else if (is_array($item)) {
+                    $sub = [];
+                    foreach ($item as $subItem) {
+                        if ($subItem instanceof Tag) {
+                            $ar = $subItem->asArray();
+                            $sub[key($ar)] = current($ar);
+                        } else {
+                            $sub[] = $subItem;
+                        }
+                    }
+                    $v[] = $sub;
                 } else {
                     $v[] = $item;
                 }
@@ -64,20 +75,46 @@ class Tag
         return [$this->tag => $v];
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $res = "{{$this->tag}: ";
 
-        if ($this->value instanceof Tag) {
-            $res .= $this->value;
-        } else if (is_array($this->value)) {
-            $res .= '[' . implode(', ', $this->value) . ']';
+        if (is_array($this->value)) {
+            $res .= $this->__arrayToString($this->value);
         } else {
             $res .= $this->value;
         }
 
         return $res . '}';
     }
+
+    /**
+     * @param array $array
+     * @return string
+     */
+    private function __arrayToString($array)
+    {
+        $res = '[';
+
+        foreach ($array as $item) {
+            if (is_array($item)) {
+                $res .= $this->__arrayToString($item);
+            } else {
+                $res .= $item;
+            }
+            // Add comma if not last item
+            if ($item !== end($array)) {
+                $res .= ', ';
+            }
+        }
+
+        return $res . ']';
+    }
+
+    // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 
     /**
      * @param array $input
@@ -103,14 +140,35 @@ class Tag
 
         $components = [];
 
-        foreach ($input as $key => $value) {
-            if (is_array($value)) {
-                $components[] = new Tag($key, self::fromArray($value));
-            } else {
-                $components[] = new Tag($key, $value);
+        if (self::isList($input)) {
+            foreach ($input as $item) {
+                $components[] = self::fromArray($item);
+            }
+        } else {
+            foreach ($input as $key => $value) {
+                if (is_array($value)) {
+                    $components[] = new Tag($key, self::fromArray($value));
+                } else {
+                    $components[] = new Tag($key, $value);
+                }
             }
         }
 
         return $components;
+    }
+
+    /**
+     * @param array $array
+     * @return bool
+     */
+    private static function isList($array)
+    {
+        foreach ($array as $item) {
+            if (!is_array($item)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

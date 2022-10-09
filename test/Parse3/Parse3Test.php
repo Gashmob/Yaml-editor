@@ -26,7 +26,7 @@ class Parse3Test implements Test
         if ((string)$tags[2] !== '{customer: [{given: Dorothy}, {family: Gale}]}') {
             return false;
         }
-        if ((string)$tags[3] !== '{items: [{0: [{0: {part_no: A4786}}, {1: {descrip: Water Bucket (Filled)}}, {2: {price: 1.47}}, {3: {quantity: 4}}]}, {1: [{0: {part_no: E1628}}, {1: {descrip: High Heeled "Ruby" Slippers}}, {2: {size: 8}}, {3: {price: 100.27}}, {4: {quantity: 1}}]}]}') {
+        if ((string)$tags[3] !== '{items: [[{part_no: A4786}, {descrip: Water Bucket (Filled)}, {price: 1.47}, {quantity: 4}], [{part_no: E1628}, {descrip: High Heeled "Ruby" Slippers}, {size: 8}, {price: 100.27}, {quantity: 1}], {foo: bar}]}') {
             return false;
         }
         if ((string)$tags[4] !== '{bill-to: [{street: [{0:  123 Tornado Alley}, {1:  Suite 16}]}, {city: East Centerville}, {state: KS}]}') {

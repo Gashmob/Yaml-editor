@@ -11,8 +11,11 @@
     ],
     "autoload": {
         "psr-4": {
-            "YamlEditor\\": "src/yaml_editor"
+            "Gashmob\\YamlEditor\\": "src/",
+            "Gashmob\\YamlEditor\\Test\\": "test/"
         }
     },
-    "require": {}
+    "require": {
+        "php": ">=5.6"
+    }
 }

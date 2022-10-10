@@ -1,26 +1,27 @@
-Yaml Editor
-===
+# Yaml Editor
 
-Cette série de 3 classes vous permettra de lire et de modifier facilement vos fichiers yaml.
+[![Tests](https://github.com/Gashmob/Yaml-editor/actions/workflows/test.yml/badge.svg)](https://github.com/Gashmob/Yaml-editor/actions/workflows/test.yml)
+
+The `Yaml` class allow you to read and write YAML files easily.
 
 ___
 
-Tutoriel
----
-Voici un petit exemple de comment utiliser ces classes :
-````php
-use YamlEditor\YamlFile;
+## Tutorial
 
-// Ouvre un fichier yaml, le créé si il n'existe pas
-$yamlFile = new YamlFile('monFichier.yml');
-// Convertie le tableau yaml en tableau php
-$yamlArray = $yamlFile->getYamlArray();
+Here a little example of how to use this classes:
 
-// Modifie la valeur de foo.bar à 2, créé le chemin si il n'existe pas
-$yamlArray->set('foo.bar', 2);
-// Affiche la valeur de foo.bar, donc 2
-echo $yamlArray->get('foo.bar');
+```php
+<?php
 
-// Modifie le fichier qu'on a ouvert avec le nouveau tableau
-$yamlFile->setYamlArray($yamlArray);
-````
+use Gashmob\YamlEditor\Yaml;
+
+// Parse a file:
+$output = Yaml::parseFile('myFile.yml');
+
+// Or just parse directly a string
+$output = Yaml::parse('foo: bar');
+
+// Then get the yaml result from the output
+$yaml = Yaml::dump($output);
+file_put_contents('myFile.yml', $yaml);
+```

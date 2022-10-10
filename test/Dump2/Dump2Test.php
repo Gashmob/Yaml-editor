@@ -5,6 +5,8 @@ namespace Gashmob\YamlEditor\Test\Dump2;
 use Gashmob\YamlEditor\Test\Test;
 use Gashmob\YamlEditor\Yaml;
 
+require_once __DIR__ . '/../Test.php';
+
 class Dump2Test implements Test
 {
 

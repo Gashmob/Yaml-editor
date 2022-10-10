@@ -2,7 +2,7 @@
     "name": "gashmob/yaml-editor",
     "description": "Php classes for editing yaml files",
     "type": "library",
-    "license": "MIT",
+    "license": "GPL-3.0-or-later",
     "authors": [
         {
             "name": "Kevin Traini",

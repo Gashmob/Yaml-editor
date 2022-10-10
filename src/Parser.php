@@ -133,6 +133,10 @@ class Parser
         $currentTag = null;
         $childLines = [];
         foreach ($lines as $line) {
+            if (preg_match('/^ *#/', $line)) { // Is comment
+                continue;
+            }
+
             $indent = $this->getIndent($line);
             if ($indent === 0) {
                 if ($line[0] == '|') { // multiline

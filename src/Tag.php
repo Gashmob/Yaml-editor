@@ -114,6 +114,93 @@ class Tag
         return $res . ']';
     }
 
+    /**
+     * Dump the tag to YAML.
+     *
+     * @param int $indent Number of spaces for indentation
+     * @param int $times Indentation level (used for recursion)
+     * @param bool $firstIdent If doing the first indent or not (used for recursion)
+     * @return string
+     */
+    public function dump($indent = 4, $times = 0, $firstIdent = true)
+    {
+        $output = '';
+        if ($firstIdent) {
+            $output .= str_repeat(' ', $times * $indent);
+        }
+        $output .= $this->tag . ':';
+
+        if (is_array($this->value)) {
+            if ($this->isPartialList($this->value)) {
+                $output .= "\n";
+                foreach ($this->value as $item) {
+                    $output .= str_repeat(' ', ($times + 1) * $indent) . '- ';
+                    if (is_array($item)) {
+                        $first = true;
+                        foreach ($item as $subItem) {
+                            if ($first) {
+                                $first = false;
+                                $output .= $subItem->dump($indent, $times + 2, false);
+                            } else {
+                                $output .= '  ' . $subItem->dump($indent, $times + 1);
+                            }
+                        }
+                    } else {
+                        $output .= $item->dump($indent, $times + 1, false);
+                    }
+                }
+            } else if ($this->isListOfTag($this->value)) {
+                $output .= "\n";
+                foreach ($this->value as $item) {
+                    $output .= $item->dump($indent, $times + 1);
+                }
+            } else {
+                $output .= " |\n";
+                foreach ($this->value as $line) {
+                    $output .= str_repeat(' ', ($times + 1) * $indent) . $line . "\n";
+                }
+            }
+        } else {
+            $output .= ' ' . $this->value;
+        }
+
+        return $output . "\n";
+    }
+
+    /**
+     * Used by dump to know if the value need to be dumped as a list or not
+     *
+     * @param array $array
+     * @return bool
+     */
+    private function isPartialList($array)
+    {
+        foreach ($array as $item) {
+            if (is_array($item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Used by dump to know if the value is a list of tags or a list of value
+     *
+     * @param array $array
+     * @return bool
+     */
+    private function isListOfTag($array)
+    {
+        foreach ($array as $item) {
+            if (!($item instanceof Tag)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     // _.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-._.-.
 
     /**
@@ -138,23 +225,27 @@ class Tag
             return new Tag(key($input), current($input));
         }
 
-        $components = [];
+        $tags = [];
 
         if (self::isList($input)) {
             foreach ($input as $item) {
-                $components[] = self::fromArray($item);
+                $tags[] = self::fromArray($item);
             }
         } else {
             foreach ($input as $key => $value) {
                 if (is_array($value)) {
-                    $components[] = new Tag($key, self::fromArray($value));
+                    if (self::isValueList($value)) {
+                        $tags[] = new Tag($key, $value);
+                    } else {
+                        $tags[] = new Tag($key, self::fromArray($value));
+                    }
                 } else {
-                    $components[] = new Tag($key, $value);
+                    $tags[] = new Tag($key, $value);
                 }
             }
         }
 
-        return $components;
+        return $tags;
     }
 
     /**
@@ -167,6 +258,23 @@ class Tag
             if (!is_array($item)) {
                 return false;
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $array
+     * @return bool
+     */
+    private static function isValueList($array)
+    {
+        $i = 0;
+        foreach ($array as $key => $value) {
+            if ($key !== $i || is_array($value)) {
+                return false;
+            }
+            $i++;
         }
 
         return true;

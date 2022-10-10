@@ -1,11 +1,11 @@
 <?php
 
-namespace Gashmob\YamlEditor\Test\ComponentFromArray1;
+namespace Gashmob\YamlEditor\Test\TagFromArray1;
 
 use Gashmob\YamlEditor\Tag;
 use Gashmob\YamlEditor\Test\Test;
 
-class ComponentFromArray1Test implements Test
+class TagFromArray1Test implements Test
 {
     /**
      * @inheritDoc

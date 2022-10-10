@@ -121,7 +121,7 @@ class Parser
     }
 
     /**
-     * Parse the lines into an array of components.
+     * Parse the lines into an array of tags.
      *
      * @param string[] $lines
      * @return Tag[]|array|string
@@ -137,7 +137,7 @@ class Parser
             if ($indent === 0) {
                 if ($line[0] == '|') { // multiline
                     unset($lines[0]);
-                    return array_values($lines);
+                    return $this->reduceIndent(array_values($lines));
                 } else if ($line[0] == '-') { // list
                     return $this->parseList($lines);
                 } else if ($line[0] == '>') { // block
@@ -170,13 +170,13 @@ class Parser
             $tags[$currentTag] = $childLines;
         }
 
-        // Transform all tags into Components and use doParse() recursively on their values
-        $components = [];
+        // Transform all tags into Tags and use doParse() recursively on their values
+        $result = [];
         foreach ($tags as $tag => $childLines) {
-            $components[] = new Tag($tag, $this->doParse($this->reduceIndent($childLines)));
+            $result[] = new Tag($tag, $this->doParse($this->reduceIndent($childLines)));
         }
 
-        return $components;
+        return $result;
     }
 
     /**

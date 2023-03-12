@@ -40,9 +40,10 @@ class ListField extends Field
     /**
      * @param string          $key
      * @param (Field|mixed)[] $value
+     * @param string|null     $tag
      */
-    public function __construct(string $key, array $value)
+    public function __construct(string $key, array $value, ?string $tag = null)
     {
-        parent::__construct($key, $value);
+        parent::__construct($key, $value, $tag);
     }
 }

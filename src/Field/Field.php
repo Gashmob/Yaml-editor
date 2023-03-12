@@ -35,8 +35,9 @@ namespace Gashmob\YamlEditor\Field;
 class Field
 {
     public function __construct(
-        public string $key,
-        public mixed  $value,
+        public string  $key,
+        public mixed   $value,
+        public ?string $tag = null,
     ) {
     }
 

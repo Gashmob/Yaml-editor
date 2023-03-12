@@ -25,7 +25,7 @@
 
 namespace Gashmob\YamlEditor\Field;
 
-class RootField extends Field
+class MultipleValueField extends Field
 {
     /**
      * @param string  $key

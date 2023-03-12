@@ -46,4 +46,14 @@ class ListField extends Field
     {
         parent::__construct($key, $value, $tag);
     }
+
+    public function __serialize(): array
+    {
+        return [
+            $this->key => array_map(
+                fn($value) => $value instanceof Field ? serialize($value) : $value,
+                (array) $this->value
+            ),
+        ];
+    }
 }

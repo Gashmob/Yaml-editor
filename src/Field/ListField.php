@@ -26,27 +26,23 @@
 namespace Gashmob\YamlEditor\Field;
 
 /**
- * Represent a simple field
+ * Represent a field with a list a value
  *
  * <code>
- * key: value
+ * key:
+ *   - value1
+ *   - value2
+ *   - value3
  * </code>
  */
-class Field
+class ListField extends Field
 {
-    public function __construct(
-        public string $key,
-        public mixed  $value,
-    ) {
-    }
-
     /**
-     * @return array<string, mixed>
+     * @param string          $key
+     * @param (Field|mixed)[] $value
      */
-    public function __serialize(): array
+    public function __construct(string $key, array $value)
     {
-        return [
-            $this->key => $this->value,
-        ];
+        parent::__construct($key, $value);
     }
 }

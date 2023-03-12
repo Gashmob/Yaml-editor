@@ -25,6 +25,16 @@
 
 namespace Gashmob\YamlEditor\Field;
 
+/**
+ * Represent a field with multiple value
+ *
+ * <code>
+ * key:
+ *   value1: ...
+ *   value2: ...
+ *   value3: ...
+ * </code>
+ */
 class MultipleValueField extends Field
 {
     /**

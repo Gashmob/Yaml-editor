@@ -25,6 +25,13 @@
 
 namespace Gashmob\YamlEditor\Field;
 
+/**
+ * Represent a field with an array as value
+ *
+ * <code>
+ * key: [ value1, value2, value3 ]
+ * </code>
+ */
 class ArrayField extends Field
 {
     /**
